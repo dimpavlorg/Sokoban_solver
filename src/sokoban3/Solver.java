@@ -15,7 +15,7 @@ import java.util.*;
 public class Solver {
         private  LinkedList<State> generator;
         private  LinkedList<State> statesAll;
-        private State endState;
+       // private State endState;
         private boolean flag;
         private LinkedList<State> path;
         private DeadLock deadLock;
@@ -25,7 +25,7 @@ public class Solver {
             generator = new LinkedList<State>();
             statesAll = new LinkedList<State>();
             generator.add(init);            
-            endState = State.getEndState(init);
+           // endState = State.getEndState(init);
             path = new LinkedList<State>();
             flag = false;
             
@@ -133,7 +133,7 @@ public class Solver {
             }
                 if (!statesAll.contains(cur)) statesAll.add(cur);
                 for (State it: statesAll){
-                    flag = flag | State.isEnd(it);
+                    flag = flag | it.isEnd(it);
                 }             
             }           
         }while(!(generator.isEmpty() || flag));
@@ -145,7 +145,7 @@ public class Solver {
             if (flag){   
                 State cur = null;
                 for (State it: statesAll){
-                    if (State.isEnd(it)){
+                    if (it.isEnd(it)){
                         cur = it;
                         break;
                     }                    

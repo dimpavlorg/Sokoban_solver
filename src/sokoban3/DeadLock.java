@@ -178,7 +178,7 @@ public class DeadLock {
           //  System.out.println(blockedBoxes.size());
             for (BoxState it : blockedBoxes){
                 {
-                    flag = flag | !State.goals.contains(it.pBox);
+                    flag = flag | !init.goals.contains(it.pBox);
               //      System.out.println(flag + "Мы ссука в цикле");
                 }
             }                       
@@ -192,8 +192,8 @@ public class DeadLock {
         
         // проверяем блокировку припятствием или заблокированной окробкой по оси y
         //System.out.println("проверяем блокировку припятствием или заблокированной окробкой по оси y " + p.hashCode() );
-        if (State.obstacles.contains(new Point(pBox.x, pBox.y-1))
-                || State.obstacles.contains(new Point(pBox.x, pBox.y+1)) )                
+        if (init.obstacles.contains(new Point(pBox.x, pBox.y-1))
+                || init.obstacles.contains(new Point(pBox.x, pBox.y+1)) )                
                 //|| blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1)))
                // || blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))) 
             p.horizBlock = true;  
@@ -202,8 +202,8 @@ public class DeadLock {
         
         // проверяем блокировку припятствием или заблокированной окробкой по оси x
         //System.out.println("проверяем блокировку припятствием или заблокированной окробкой по оси x " + p.hashCode());
-        if (State.obstacles.contains(new Point(pBox.x-1, pBox.y)) 
-                || State.obstacles.contains(new Point(pBox.x+1, pBox.y)))
+        if (init.obstacles.contains(new Point(pBox.x-1, pBox.y)) 
+                || init.obstacles.contains(new Point(pBox.x+1, pBox.y)))
                // || blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y))) 
                // || blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))) 
             p.vertBlock = true;                            
@@ -468,7 +468,7 @@ public class DeadLock {
         for (int i = 1; i<=maxX; i++){
             for (int j = 1; j<=maxY; j++){
                 Point p = new Point(i,j);
-                if (State.goals.contains(p)){
+                if (init.goals.contains(p)){
                     if (init.boxes.contains(p)){
                         s.append('$');
                     }
@@ -480,7 +480,7 @@ public class DeadLock {
                     else s.append(' ');
                     continue;
                 }
-                if (State.obstacles.contains(p)){
+                if (init.obstacles.contains(p)){
                     s.append('#');
                     continue;
                 }
