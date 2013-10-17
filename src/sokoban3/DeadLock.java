@@ -173,13 +173,11 @@ public class DeadLock {
         blockedBoxes.clear();
         openlist.clear();
         if(isBlockedBox(pBox, cur)) {
-         //   System.out.println("Вошли в if");
-            boolean flag = false;
-          //  System.out.println(blockedBoxes.size());
+         
+            boolean flag = false;          
             for (BoxState it : blockedBoxes){
                 {
-                    flag = flag | !init.goals.contains(it.pBox);
-              //      System.out.println(flag + "Мы ссука в цикле");
+                    flag = flag | !init.goals.contains(it.pBox);              
                 }
             }                       
             return flag;
@@ -190,269 +188,167 @@ public class DeadLock {
     private boolean isBlockedBox(Point pBox, State cur){
         BoxState p = new BoxState(pBox); 
         
-        // проверяем блокировку припятствием или заблокированной окробкой по оси y
-        //System.out.println("проверяем блокировку припятствием или заблокированной окробкой по оси y " + p.hashCode() );
         if (init.obstacles.contains(new Point(pBox.x, pBox.y-1))
-                || init.obstacles.contains(new Point(pBox.x, pBox.y+1)) )                
-                //|| blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1)))
-               // || blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))) 
+                || init.obstacles.contains(new Point(pBox.x, pBox.y+1)) )                               
             p.horizBlock = true;  
-       //System.out.println(p.horizBlock + " " + p.hashCode());
-        
-        
-        // проверяем блокировку припятствием или заблокированной окробкой по оси x
-        //System.out.println("проверяем блокировку припятствием или заблокированной окробкой по оси x " + p.hashCode());
-        if (init.obstacles.contains(new Point(pBox.x-1, pBox.y)) 
-                || init.obstacles.contains(new Point(pBox.x+1, pBox.y)))
-               // || blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y))) 
-               // || blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))) 
-            p.vertBlock = true;                            
-        // System.out.println(p.vertBlock + " " + p.hashCode());
        
-         
-         //проверяем, есть ли простой дедлок в зоне коробкий по оси y    
+        
+        
+       
+        if (init.obstacles.contains(new Point(pBox.x-1, pBox.y)) 
+                || init.obstacles.contains(new Point(pBox.x+1, pBox.y)))              
+            p.vertBlock = true;                                   
+       
+                 
         if (isDeadLock(new Point(pBox.x, pBox.y-1)) && isDeadLock(new Point(pBox.x, pBox.y+1)))
             p.horizBlock = true;
        
-        
-        //проверяем, есть ли простой дедлок в зоне коробкий по оси y
+                
         if (isDeadLock(new Point(pBox.x-1, pBox.y)) && isDeadLock(new Point(pBox.x+1, pBox.y)))
             p.vertBlock = true;
         
         if (((openlist.contains(new BoxState(new Point(pBox.x+1, pBox.y)))) && (openlist.contains(new BoxState(new Point(pBox.x, pBox.y+1))))) 
          || ((openlist.contains(new BoxState(new Point(pBox.x+1, pBox.y)))) && (openlist.contains(new BoxState(new Point(pBox.x, pBox.y-1))))) 
          || ((openlist.contains(new BoxState(new Point(pBox.x-1, pBox.y)))) && (openlist.contains(new BoxState(new Point(pBox.x, pBox.y+1)))))
-         || ((openlist.contains(new BoxState(new Point(pBox.x-1, pBox.y)))) && (openlist.contains(new BoxState(new Point(pBox.x, pBox.y-1)))))){
-        
+         || ((openlist.contains(new BoxState(new Point(pBox.x-1, pBox.y)))) && (openlist.contains(new BoxState(new Point(pBox.x, pBox.y-1)))))){        
             blockedBoxes.add(p);
             p.horizBlock = true;
-            p.vertBlock = true;
-          //  System.out.println("Квадратный дедлок " + p.hashCode());
-        } 
-        
-        else {
-        
-        
-        //если есть ящик сверху проверяем блокирован ли он
-        if (cur.boxes.contains(new Point(pBox.x, pBox.y-1))){
-            if (!blockedBoxes.contains(p)){
-                if (!openlist.contains(p)) openlist.add(p);            
-                if (!openlist.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
-              //      System.out.println("Видим ящик слева, проверяем его " + p.hashCode());
-                    if (!blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
-                   //      System.out.println("Ящик слева не блокирован");
-                         p.vertBlock = isBlockedBox(new Point(pBox.x, pBox.y-1),cur);
-                    }
-            
-                     else{
-                     //   System.out.println("Ящик слева  блокирован");
-                        if (blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y)))
-                                || blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){
-                         blockedBoxes.add(p);
-                         p.horizBlock = true;
-                         p.vertBlock = true;
-            }
-                        else{
-                            p.horizBlock = true;
-                        }
-                
-            }}}}
+            p.vertBlock = true;          
+        }        
+        else {                        
+        	if (cur.boxes.contains(new Point(pBox.x, pBox.y-1))){
+        		if (!blockedBoxes.contains(p)){
+        			if (!openlist.contains(p)) openlist.add(p);            
+        			if (!openlist.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){             
+        				if (!blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){                  
+        					p.vertBlock = isBlockedBox(new Point(pBox.x, pBox.y-1),cur);
+        				}            
+        				else{                     
+        					if (blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y))) 
+                        		|| blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){                        		
+                        			blockedBoxes.add(p);
+                        			p.horizBlock = true;
+                        			p.vertBlock = true;
+                        		}
+        					else{
+        						p.horizBlock = true;
+        					}                           
+        				}                   
+        			}               
+        		}           
+        	}
         
         
         
          
-        //если есть ящик снизу проверяем блокирован ли он
-        if (cur.boxes.contains(new Point(pBox.x, pBox.y+1))){
-            if (!blockedBoxes.contains(p)){
-                if (!openlist.contains(p)) openlist.add(p);
-                if (!openlist.contains(new BoxState(new Point(pBox.x, pBox.y+1)))){
-                //    System.out.println("Видим ящик справа, проверяем его " + p.hashCode());
-                    if (!blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1)))){
-                //         System.out.println("Ящик справа не блокирован");
-                         p.horizBlock = isBlockedBox(new Point(pBox.x, pBox.y+1),cur);
-                    }
-            
-                     else{
-                 //       System.out.println("Ящик справа  блокирован");
-                        if (blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y)))
-                                || blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){
-                         blockedBoxes.add(p);
-                         p.horizBlock = true;
-                         p.vertBlock = true;
-                }
-                        else{
-                            p.horizBlock = true;
-                        }
-            }
-        }}}
+        
+        	if (cur.boxes.contains(new Point(pBox.x, pBox.y+1))){
+        		if (!blockedBoxes.contains(p)){
+        			if (!openlist.contains(p)) openlist.add(p);
+        			if (!openlist.contains(new BoxState(new Point(pBox.x, pBox.y+1)))){               
+        				if (!blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1)))){                
+        					p.horizBlock = isBlockedBox(new Point(pBox.x, pBox.y+1),cur);
+        				}            
+        				else{                 
+        					if (blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y)))
+        							|| blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){
+        						blockedBoxes.add(p);
+        						p.horizBlock = true;
+        						p.vertBlock = true;
+        					}
+        					else{
+        						p.horizBlock = true;
+        					}            
+        				}        
+        			}                
+        		}            
+        	}
      
         
-        
-        //если есть ящик справа проверяем блокирован ли он
-        if (cur.boxes.contains(new Point(pBox.x+1, pBox.y))){
-            if (!blockedBoxes.contains(p)){
-                if (!openlist.contains(p)) openlist.add(p);
-                if (!openlist.contains(new BoxState(new Point(pBox.x+1, pBox.y)))){ 
-               //     System.out.println("Видим ящик снизу, проверяем его " + p.hashCode());
-                    if (!blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y)))){
-              //          System.out.println("Ящик снизу не блокирован");
-                         p.horizBlock = isBlockedBox(new Point(pBox.x+1, pBox.y),cur);
-                    }
-            
-                     else{
-               //         System.out.println("Ящик снизу блокирован");
-                        if (blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1)))
-                                || blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
-                         blockedBoxes.add(p);
-                         p.horizBlock = true;
-                         p.vertBlock = true;
-                }
-                        else{
-                            p.vertBlock = true;
-                        }
-            }
-            }}}
+                
+        	if (cur.boxes.contains(new Point(pBox.x+1, pBox.y))){
+        		if (!blockedBoxes.contains(p)){
+        			if (!openlist.contains(p)) openlist.add(p);
+        			if (!openlist.contains(new BoxState(new Point(pBox.x+1, pBox.y)))){               
+        				if (!blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y)))){             
+        					p.horizBlock = isBlockedBox(new Point(pBox.x+1, pBox.y),cur);
+        				}            
+        				else{
+             
+        					if (blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1)))
+        							|| blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
+        						blockedBoxes.add(p);
+        						p.horizBlock = true;
+        						p.vertBlock = true;
+        					}
+        					else{
+        						p.vertBlock = true;
+        					}            
+        				}            
+        			}                
+        		}            
+        	}
 
         
          
-         
-        //если есть ящик слева проверяем блокирован ли он
-        if (cur.boxes.contains(new Point(pBox.x-1, pBox.y))){
-           
-                if (!openlist.contains(p)) openlist.add(p);
-                if (!openlist.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){ 
-               //     System.out.println("Видим ящик сверху, проверяем его " + p.hashCode());
-                    if (!blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){
-              //          System.out.println("Ящик сверху не блокирован");
-                         p.vertBlock = isBlockedBox(new Point(pBox.x-1, pBox.y),cur);
-                    }
-            
-                     else{
-                 //       System.out.println("Ящик сверху блокирован");
-                        if (blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1)))
-                                || blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
-                  //       System.out.println("Блокируем ящик " + p.hashCode());
-                         blockedBoxes.add(p);
-                         p.horizBlock = true;
-                         p.vertBlock = true;
-                        }
-                        else{
-                            p.vertBlock = true;
-                        }
-            }}
-        }
-   
-        }
-        if (openlist.contains(new BoxState(new Point(pBox.x, pBox.y)))){
-             if (blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1))) 
-                || blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
-                 if (openlist.contains(new BoxState(new Point(pBox.x+1, pBox.y))) 
-                  || blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){
-                     blockedBoxes.add(p);
-                     p.horizBlock = true;
-                     p.vertBlock = true;
-               //      System.out.println("Ящик сбоку заблокирован, ящик св/сн открыт " + p.hashCode());
-                 }
-                 else{
-                     p.horizBlock = true;
-                    // p.vertBlock = true; 
-                  //   System.out.println("Ящик сбоку заблокирован, но св/сн нет открытого ящика");
                  
-                 }
-             }
+        	if (cur.boxes.contains(new Point(pBox.x-1, pBox.y))){           
+                if (!openlist.contains(p)) openlist.add(p);
+                	if (!openlist.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){                
+                		if (!blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){             
+                			p.vertBlock = isBlockedBox(new Point(pBox.x-1, pBox.y),cur);
+                		}            
+                		else{                 
+                			if (blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1)))
+                					|| blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){                  
+                				blockedBoxes.add(p);
+                				p.horizBlock = true;
+                				p.vertBlock = true;
+                			}
+                			else{
+                				p.vertBlock = true;
+                			}            
+                		}                    
+                	}
+        	}   
+        }
+        
+        
+        if (openlist.contains(new BoxState(new Point(pBox.x, pBox.y)))){
+        	if (blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1))) 
+        			|| blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
+        		if (openlist.contains(new BoxState(new Point(pBox.x+1, pBox.y))) 
+        				|| blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){
+        			blockedBoxes.add(p);
+        			p.horizBlock = true;
+        			p.vertBlock = true;              
+        		}
+        		else{
+        			p.horizBlock = true;                                     
+        		}
+        	}
         }
         if (openlist.contains(new BoxState(new Point(pBox.x, pBox.y)))){
-             if (blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y))) 
-                || blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){
-                 if (openlist.contains(new BoxState(new Point(pBox.x, pBox.y+1))) 
-                  || openlist.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
-                     blockedBoxes.add(p);
-                     p.horizBlock = true;
-                     p.vertBlock = true;
-               //      System.out.println("Ящик св/сн заблок, ящик сбоку открыт " + p.hashCode());
-                 }
-                 else{
-                   //  p.horizBlock = true;
-                     p.vertBlock = true;
-              //       System.out.println("Ящик с св/сн заблок, но сбоку нет открытого ящика");
-                 }
-             }
+        	if (blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y))) 
+        			|| blockedBoxes.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){
+        		if (openlist.contains(new BoxState(new Point(pBox.x, pBox.y+1))) 
+        				|| openlist.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
+        			blockedBoxes.add(p);
+        			p.horizBlock = true;
+        			p.vertBlock = true;              
+        		}
+        		else{                  
+        			p.vertBlock = true;              
+        		}
+        	}
         }
-        // смотри есть ли в блокированных ящиках ящики слева или справа
-      /*  if (blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y)))) 
-             {
-            if (openlist.contains(new BoxState(new Point(pBox.x+1, pBox.y+1))) 
-                || openlist.contains(new BoxState(new Point(pBox.x+1, pBox.y+1))))
-            {
-            System.out.println("Видим заблокированный ящик по оси Y и блокируем наш " + p.hashCode());
-            p.vertBlock = true;
-                }
-        }
-        
-         
-        
-        // смотри есть ли в блокированных ящиках ящики сверху или снизу
-        if (blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y+1))) 
-                || blockedBoxes.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){
-            System.out.println("Видим заблокированный ящик по оси X и блокируем наш " + p.hashCode());
-            p.horizBlock = true;
-        }
-         */
-      //  System.out.println(p.horizBlock + " " + p.vertBlock);
-        return p.horizBlock & p.vertBlock; 
-        //return  p.horizBlock || p.vertBlock;
+     
+     
+        return p.horizBlock & p.vertBlock;       
     }
     
  
-   /* private boolean isFrozenBox(Point pBox, State cur){
-        BoxState p = new BoxState(pBox);               
-        
-        if (State.obstacles.contains(new Point(pBox.x, pBox.y-1)) || 
-                State.obstacles.contains(new Point(pBox.x, pBox.y+1)) ||
-                boxesAsWall.contains(new BoxState(new Point(pBox.x, pBox.y+1))) ||
-                boxesAsWall.contains(new BoxState(new Point(pBox.x, pBox.y-1)))) 
-            p.horizBlock = true;
-                                    
-        if (State.obstacles.contains(new Point(pBox.x-1, pBox.y)) || 
-                State.obstacles.contains(new Point(pBox.x+1, pBox.y)) ||
-                boxesAsWall.contains(new BoxState(new Point(pBox.x+1, pBox.y))) ||
-                boxesAsWall.contains(new BoxState(new Point(pBox.x-1, pBox.y)))) 
-            p.vertBlock = true;                            
-            
-        if (isDeadLock(new Point(pBox.x, pBox.y-1)) && isDeadLock(new Point(pBox.x, pBox.y+1)))
-            p.horizBlock = true;
-        if (isDeadLock(new Point(pBox.x-1, pBox.y)) && isDeadLock(new Point(pBox.x+1, pBox.y)))
-            p.vertBlock = true;                      
-        
-        if (cur.boxes.contains(new Point(pBox.x, pBox.y-1))){                      
-                if (!boxesAsWall.contains(p)) boxesAsWall.add(p);            
-                if (!boxesAsWall.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){                
-                    return isFrozenBox(new Point(pBox.x, pBox.y-1), cur);
-                }
-        }
-        
-        if (cur.boxes.contains(new Point(pBox.x, pBox.y+1))){
-                if (!boxesAsWall.contains(p)) boxesAsWall.add(p);
-                if (!boxesAsWall.contains(new BoxState(new Point(pBox.x, pBox.y+1)))){                
-                    return isFrozenBox(new Point(pBox.x, pBox.y+1), cur);
-                }
-        }
-        
-        if (cur.boxes.contains(new Point(pBox.x+1, pBox.y))){
-                if (!boxesAsWall.contains(p)) boxesAsWall.add(p);
-                if (!boxesAsWall.contains(new BoxState(new Point(pBox.x+1, pBox.y)))){                
-                    return isFrozenBox(new Point(pBox.x+1, pBox.y),cur);
-                }
-            }
-        
-        if (cur.boxes.contains(new Point(pBox.x-1, pBox.y))){            
-                if (!boxesAsWall.contains(p)) boxesAsWall.add(p);
-                if (!boxesAsWall.contains(new BoxState(new Point(pBox.x-1, pBox.y)))){                
-                    return isFrozenBox(new Point(pBox.x-1, pBox.y),cur);
-                }
-            }                                       
-        return p.horizBlock & p.vertBlock;
-    }*/
+
         
     
     public boolean isDeadLock(int x, int y){
