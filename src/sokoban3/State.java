@@ -170,6 +170,7 @@ public class State implements Comparable{
         return goals.contains(p);
     }
    //dimp nout
+   //dimp netbook
         @Override
     public int compareTo(Object o){
         if (this.equals(o)) return 0;
