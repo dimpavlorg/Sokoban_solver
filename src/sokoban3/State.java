@@ -169,8 +169,7 @@ public class State implements Comparable{
     public boolean isBoxOnGoal(Point p){
         return goals.contains(p);
     }
-   //dimp nout
-   //dimp netbook
+
         @Override
     public int compareTo(Object o){
         if (this.equals(o)) return 0;
@@ -194,5 +193,5 @@ public class State implements Comparable{
         else
         return 1;        
     }
-  //Commit from netbook
+ 
 }
