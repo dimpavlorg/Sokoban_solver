@@ -16,6 +16,7 @@ public class Point{
         this.x = x;
         this.y = y;
     }
+    //lkoko
     public int x, y;
        
     public Point copy(){
