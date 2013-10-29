@@ -20,18 +20,18 @@ public class Sokoban3 {
     public static void main(String[] args){
         // TODO code application logic here
         try{ 
-           // State init = new State().getInitialState();
-           // DeadLock d = new DeadLock(init); 
+            State init = new State().getInitialState();
+            DeadLock d = new DeadLock(init); 
            // System.out.println(d.toString());
-          //  System.out.println(d.isFrosenDeadLock(new Point(2,7), init));
+            System.out.println(d.isFrosenDeadLock(new Point(5,6), init));
             //System.out.println(d.toString());
            // System.out.println(d.isDeadLock(6, 2));
            
-           System.out.println("Started at "+new Date());
-           Solver s = new Solver(new State().getInitialState());            
-           s.solve();            
-           System.out.println(s.generatePath());  
-           System.out.println("Ended at "+ new Date());
+         //  System.out.println("Started at "+new Date());
+         //  Solver s = new Solver(new State().getInitialState());            
+          // s.solve();            
+          // System.out.println(s.generatePath());  
+          // System.out.println("Ended at "+ new Date());
         }catch (IOException e){
             e.printStackTrace();
         }
