@@ -173,13 +173,13 @@ public class DeadLock {
         blockedBoxes.clear();
         openlist.clear();
         if(isBlockedBox(pBox, cur)) {
-            System.out.println("Моя хорошо сосать");
+           //System.out.println("Моя хорошо сосать");
             boolean flag = false;          
             for (BoxState it : blockedBoxes){
                 {
-                	System.out.println("Моя хорошо сосать");
+                	//System.out.println("Моя хорошо сосать");
                     flag = flag | !init.goals.contains(it.pBox);
-                    System.out.println(flag);
+                    //System.out.println(flag);
                 }
             }                       
             return flag;
@@ -219,10 +219,10 @@ public class DeadLock {
         }        
         else {                        
         	
-        	System.out.println("Не куб");
+        	//System.out.println("Не куб");
         	
         	if (cur.boxes.contains(new Point(pBox.x, pBox.y-1))){
-        		System.out.println("идим коробку слева");
+        		//System.out.println("идим коробку слева");
         		if (!blockedBoxes.contains(p)){
         			if (!openlist.contains(p)) openlist.add(p);            
         			if (!openlist.contains(new BoxState(new Point(pBox.x, pBox.y-1)))){             
@@ -255,7 +255,7 @@ public class DeadLock {
          
         
         	if (cur.boxes.contains(new Point(pBox.x, pBox.y+1))){
-        		System.out.println("Видим коробку справа");
+        		//System.out.println("Видим коробку справа");
         		if (!blockedBoxes.contains(p)){
         			if (!openlist.contains(p)) openlist.add(p);
         			if (!openlist.contains(new BoxState(new Point(pBox.x, pBox.y+1)))){               
@@ -287,13 +287,13 @@ public class DeadLock {
         
                 
         	if (cur.boxes.contains(new Point(pBox.x+1, pBox.y)))  {      		
-        		System.out.println("Видим коробку снизу");
+        		//System.out.println("Видим коробку снизу");
         		if (!blockedBoxes.contains(p)){
-        			System.out.println("Не блокирована");
+        			//System.out.println("Не блокирована");
         			if (!openlist.contains(p)) openlist.add(p);
         			if (!openlist.contains(new BoxState(new Point(pBox.x+1, pBox.y)))){               
         				if (!blockedBoxes.contains(new BoxState(new Point(pBox.x+1, pBox.y)))){  
-        					System.out.println("Проверяем куб снизу");
+        					//System.out.println("Проверяем куб снизу");
         					p.vertBlock = isBlockedBox(new Point(pBox.x+1, pBox.y),cur);
         				}            
         				else{
@@ -321,7 +321,7 @@ public class DeadLock {
          
                  
         	if (cur.boxes.contains(new Point(pBox.x-1, pBox.y))){ 
-        		System.out.println("Видим коробку сверху");
+        		//System.out.println("Видим коробку сверху");
         		if (!blockedBoxes.contains(p)){
         	
                 if (!openlist.contains(p)) openlist.add(p);
@@ -343,7 +343,7 @@ public class DeadLock {
                 	}
                 	else
                 	{
-                		System.out.println("Коробка сверху в открытомлисте так что блокируем коробки");
+                		//System.out.println("Коробка сверху в открытомлисте так что блокируем коробки");
                 		p.vertBlock = true;
                 		
                 	}
@@ -384,7 +384,7 @@ public class DeadLock {
         	}
         }
         }
-        System.out.println(p.horizBlock +" "+ p.vertBlock);
+     //   System.out.println(p.horizBlock +" "+ p.vertBlock);
         return p.horizBlock & p.vertBlock;       
     }
    
