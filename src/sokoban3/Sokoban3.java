@@ -20,13 +20,14 @@ public class Sokoban3 {
     public static void main(String[] args){
         // TODO code application logic here
         try{ 
-           // State init = new State().getInitialState();
-            //DeadLock d = new DeadLock(init); 
-           // System.out.println(d.toString());
-            //System.out.println(d.isFrosenDeadLock(new Point(4,2), init));
+           //State init = new State().getInitialState();
+           //System.out.println(init);        
+           //DeadLock d = new DeadLock(init); 
+           //System.out.println(d.toString());
+            //System.out.println(d.isFrosenDeadLock(new Point(3,11), init));
             //System.out.println(d.toString());
            // System.out.println(d.isDeadLock(6, 2));
-           
+           //System.out.println(Astar.pathTo(init, new Point(4,11)));
            System.out.println("Started at "+new Date());
            Solver s = new Solver(new State().getInitialState());            
            s.solve();            
@@ -35,5 +36,6 @@ public class Sokoban3 {
         }catch (IOException e){
             e.printStackTrace();
         }
+    	
     }
 }

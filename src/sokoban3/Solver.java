@@ -13,7 +13,7 @@ import java.util.*;
  * @author Дима
  */
 public class Solver {
-        private  LinkedList<State> generator;
+        private  PriorityQueue<State> generator;
         private  LinkedList<State> statesAll;
        // private State endState;
         private boolean flag;
@@ -22,7 +22,7 @@ public class Solver {
         private long runCounter = 0;
         
         public Solver(State init){
-            generator = new LinkedList<State>();
+            generator = new PriorityQueue<State>();
             statesAll = new LinkedList<State>();
             generator.add(init);            
            // endState = State.getEndState(init);
@@ -33,114 +33,95 @@ public class Solver {
         } 
         
         
-        public void solve(){
-            State cur = null;            
+        public void solve(){        
+        	State cur = null;            
         do{              
           infoFunction();  
           cur = generator.poll();
           flag = false;
+          
           if (cur!=null){
-                
-           if (cur.isEmptyPoint(cur.man.x+1, cur.man.y)){
-                State c = cur.copyState();
-                c.man.x = c.man.x+1;
-                c.parentState = cur;
-                if (!(generator.contains(c) || statesAll.contains(c)))                      
-                            generator.add(c);                        
-            }
-            
-            if (cur.isEmptyPoint(cur.man.x-1, cur.man.y)){
-                State c = cur.copyState();
-                c.man.x = c.man.x-1;
-                c.parentState = cur;
-                    if (!(generator.contains(c) || statesAll.contains(c)))                  
-                            generator.add(c);
-                        
-            }
-            
-            if (cur.isEmptyPoint(cur.man.x, cur.man.y+1)){
-                State c = cur.copyState();
-                c.man.y = c.man.y+1;
-                c.parentState = cur;
-                   if (!(generator.contains(c) || statesAll.contains(c)))                    
-                            generator.add(c);                        
-            }
-            
-            if (cur.isEmptyPoint(cur.man.x, cur.man.y-1)){
-                State c = cur.copyState();
-                c.man.y = c.man.y-1;
-                c.parentState = cur;
-                    if (!(generator.contains(c) || statesAll.contains(c)))                  
-                            generator.add(c);
-                        
-            }
-                                    
-            if (cur.boxes.contains(new Point(cur.man.x+1, cur.man.y))){
-                if (cur.isEmptyPoint(cur.man.x+2, cur.man.y) && !deadLock.isDeadLock(cur.man.x+2, cur.man.y)){
-                    State c = cur.copyState();
-                    c.man.x = c.man.x+1;
-                    c.boxes.removeFirstOccurrence(new Point(cur.man.x+1, cur.man.y));
-                    c.boxes.add(new Point(cur.man.x+2, cur.man.y));   
-                    c.parentState = cur;
-                    if (!deadLock.isFrosenDeadLock(new Point(cur.man.x+2, cur.man.y), c)){
-                        if (!(generator.contains(c) || statesAll.contains(c)))                       
-                                generator.add(c);
-                    }
-                }                
-            }
-            
-            if (cur.boxes.contains(new Point(cur.man.x-1, cur.man.y))){
-                if (cur.isEmptyPoint(cur.man.x-2, cur.man.y) && !deadLock.isDeadLock(cur.man.x-2, cur.man.y)){
-                    State c = cur.copyState();
-                    c.man.x = c.man.x-1;
-                    c.boxes.removeFirstOccurrence(new Point(cur.man.x-1, cur.man.y));
-                    c.boxes.add(new Point(cur.man.x-2, cur.man.y));
-                    c.parentState = cur;
-                    if (!deadLock.isFrosenDeadLock(new Point(cur.man.x-2, cur.man.y), c)){
-                       if (!(generator.contains(c) || statesAll.contains(c)))
-                            generator.add(c);                    
-                    }                
-                }
-            }
-            
-            if (cur.boxes.contains(new Point(cur.man.x, cur.man.y+1))){
-                if (cur.isEmptyPoint(cur.man.x, cur.man.y+2) && !deadLock.isDeadLock(cur.man.x, cur.man.y+2)){
-                    State c = cur.copyState();
-                    c.man.y = c.man.y+1;
-                    c.boxes.removeFirstOccurrence(new Point(cur.man.x, cur.man.y+1));
-                    c.boxes.add(new Point(cur.man.x, cur.man.y+2));
-                    c.parentState = cur;
-                    if (!deadLock.isFrosenDeadLock(new Point(cur.man.x, cur.man.y+2), c)){
-                        if (!(generator.contains(c) || statesAll.contains(c)))
-                            generator.add(c);
-                    }
-                    
-                }                
-            }
-            
-            if (cur.boxes.contains(new Point(cur.man.x, cur.man.y-1))){
-                if (cur.isEmptyPoint(cur.man.x, cur.man.y-2) && !deadLock.isDeadLock(cur.man.x, cur.man.y-2)){
-                    State c = cur.copyState();
-                    c.man.y = c.man.y-1;
-                    c.boxes.removeFirstOccurrence(new Point(cur.man.x, cur.man.y-1));
-                    c.boxes.add(new Point(cur.man.x, cur.man.y-2));
-                    c.parentState = cur;
-                    if (!deadLock.isFrosenDeadLock(new Point(cur.man.x, cur.man.y-2), c)){
-                       if (!(generator.contains(c) || statesAll.contains(c)))
-                            generator.add(c);
-                    }                    
-                }                
-            }
-                if (!statesAll.contains(cur)) statesAll.add(cur);
-                for (State it: statesAll){
-                    flag = flag | it.isEnd(it);
-                }             
-            }           
+        	  
+            for (Point pBox: cur.boxes){            	
+            	if (cur.isEmptyPoint(pBox.x-1, pBox.y) && !deadLock.isDeadLock(pBox.x-1, pBox.y))
+            		if (cur.isEmptyPoint(pBox.x+1, pBox.y)){            			
+            			String pat = Astar.pathTo(cur, new Point(pBox.x+1, pBox.y));
+            			if (!pat.equals("")){
+            				State c = cur.copyState();
+            				if (pat.equals("on")) pat =""; 
+            				c.path = pat+"U";
+            				c.man = new Point(pBox.x, pBox.y);
+            				c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
+            				c.boxes.add(new Point(pBox.x-1, pBox.y));
+            				c.parentState = cur;
+            				if(!deadLock.isFrosenDeadLock(new Point(pBox.x-1, pBox.y), c))
+            						if (!(generator.contains(c) || statesAll.contains(c)))                       
+            							generator.add(c);
+            			}            				            			            			
+            		} 
+            		
+            		if (cur.isEmptyPoint(pBox.x+1, pBox.y) && !deadLock.isDeadLock(pBox.x+1, pBox.y))
+            			if (cur.isEmptyPoint(pBox.x-1, pBox.y)){
+            				String pat = Astar.pathTo(cur, new Point(pBox.x-1, pBox.y));
+            				if (!pat.equals("")){            					
+            					State c = cur.copyState();
+            					if (pat.equals("on")) pat =""; 
+            					c.path = pat + "D";
+            					c.man = new Point(pBox.x, pBox.y);
+            					c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
+                				c.boxes.add(new Point(pBox.x+1, pBox.y));
+                				c.parentState = cur;
+                				if(!deadLock.isFrosenDeadLock(new Point(pBox.x+1, pBox.y), c))
+                					if (!(generator.contains(c) || statesAll.contains(c)))                       
+                						generator.add(c);
+            				}
+            		}
+            		
+            		if (cur.isEmptyPoint(pBox.x, pBox.y+1) && !deadLock.isDeadLock(pBox.x, pBox.y+1))
+            			if (cur.isEmptyPoint(pBox.x, pBox.y-1)){
+            				String pat = Astar.pathTo(cur, new Point(pBox.x, pBox.y-1));
+            				if (!pat.equals("")){            					
+            					State c = cur.copyState();
+            					if (pat.equals("on")) pat =""; 
+            					c.path = pat + "R";
+            					c.man = new Point(pBox.x, pBox.y);
+            					c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
+                				c.boxes.add(new Point(pBox.x, pBox.y+1));
+                				c.parentState =cur;
+                				if(!deadLock.isFrosenDeadLock(new Point(pBox.x, pBox.y+1), c))
+                					if (!(generator.contains(c) || statesAll.contains(c)))                       
+                						generator.add(c);
+            				}
+            		}
+            		
+            		if (cur.isEmptyPoint(pBox.x, pBox.y-1) && !deadLock.isDeadLock(pBox.x, pBox.y-1))
+            			if (cur.isEmptyPoint(pBox.x, pBox.y+1)){
+            				String pat = Astar.pathTo(cur, new Point(pBox.x, pBox.y+1));
+            				if (!pat.equals("")){            					
+            					State c = cur.copyState();
+            					if (pat.equals("on")) pat =""; 
+            					c.path = pat + "L";
+            					c.man = new Point(pBox.x, pBox.y);
+            					c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
+                				c.boxes.add(new Point(pBox.x, pBox.y-1));
+                				c.parentState = cur;
+                				if(!deadLock.isFrosenDeadLock(new Point(pBox.x, pBox.y-1), c))
+                					if (!(generator.contains(c) || statesAll.contains(c)))                       
+                						generator.add(c);
+            				}
+            		}
+            	
+            }        	          	
+            if (!statesAll.contains(cur)) statesAll.add(cur);
+            for (State it: statesAll){
+                 flag = flag | it.isEnd(it);
+            }             
+          }           
         }while(!(generator.isEmpty() || flag));
         generator.clear();
     }
         
-        public String generatePath(){
+    public String generatePath(){
             StringBuffer res = new StringBuffer();
             if (flag){   
                 State cur = null;
@@ -151,25 +132,19 @@ public class Solver {
                     }                    
                 }                
                 while (cur != null){
-                    path.add(cur);
-                    State par = cur.parentState;
-                        if (par != null){
-                        if ((par.man.x-cur.man.x) == 1) res.append('u');
-                        if ((par.man.x-cur.man.x) == -1) res.append('d');
-                        if ((par.man.y-cur.man.y) == 1) res.append('l');
-                        if ((par.man.y-cur.man.y) == -1) res.append('r');
-                    }
+                    path.add(cur);                                            
+                    if (cur.path != null)                    
+                    	res.insert(0, cur.path);                    
                     cur = cur.parentState;
                 }
-                
-                res = res.reverse();
+                               
                 Collections.reverse(path);
                 
                                 
-                path.get(0).print();
-                for (int i = 1; i<path.size(); i++){
+               // path.get(0).print();
+                for (int i = 0; i<path.size(); i++){
                     path.get(i).print();
-                    System.out.println(res.charAt(i-1));                                                            
+                    System.out.println(path.get(i).path);                                                            
                 }
                 
                 return res.toString();

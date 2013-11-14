@@ -9,14 +9,14 @@ import java.util.*;
  *
  * @author Дима
  */
-public class State implements Comparable{
+public class State implements Comparable<State>{
     public Point man;
     public LinkedList<Point> boxes;
     public ArrayList<Point> goals;
     public ArrayList<Point> obstacles;
     private int maxX= 0, maxY = 0;
     public State parentState;
-    
+    public String path = null;
     
     public State(){
         this.boxes = new LinkedList<Point>();
@@ -30,7 +30,7 @@ public class State implements Comparable{
     
     public boolean isEmptyPoint(Point cur){
        if (cur.x<1 || cur.x > this.maxX || cur.y < 1 || cur.y > this.maxY) return false; 
-       if (this.man.equals(cur)) return false;
+       /*if (this.man.equals(cur)) return false;*/
        else return !(this.boxes.contains(cur) || this.obstacles.contains(cur));          
     }
     
@@ -128,6 +128,10 @@ public class State implements Comparable{
                     }
                     continue;
                 }
+                if (this.man.equals(p)) {                    
+                    s.append('@');
+                    continue;
+                }
                 if (this.isEmptyPoint(p)) {
                     s.append(' ');
                     continue;
@@ -141,10 +145,7 @@ public class State implements Comparable{
                     s.append('$');
                     continue;
                 }
-                if (this.man.equals(p)) {                    
-                        s.append('@');
-                    continue;
-                }
+                
             }
          s.append('\n');         
         }
@@ -171,27 +172,20 @@ public class State implements Comparable{
     }
 
         @Override
-    public int compareTo(Object o){
-        if (this.equals(o)) return 0;
-        if (o != null){
-            if (o instanceof State){
-                State cur = (State)o;
-                int thisbox = 0;
-                int curbox = 0;
-                for (Point it: this.boxes){
-                    if (this.goals.contains(it)) thisbox++;
-                }
-                for (Point it: cur.boxes){
-                    if (this.goals.contains(it)) curbox++;                   
-                }
-                
-                if (thisbox < curbox) return -1;
-                else return 1;
-            }
-            else return 1;
+    public int compareTo(State cur){
+        if (this.equals(cur)) return 0;                                   
+        int thisbox = 0;
+        int curbox = 0;
+        for (Point it: this.boxes){
+        	if (this.goals.contains(it)) thisbox++;
         }
-        else
-        return 1;        
+        for (Point it: cur.boxes){
+        	if (this.goals.contains(it)) curbox++;                   
+        }
+                
+        if (thisbox < curbox) return -1;
+        else if (thisbox == curbox) return 0;
+        else return 1;              
     }
  
 }

@@ -40,10 +40,9 @@ public class DeadLock {
     }
     
     
-    private void calculateSimpleDeadLock(){
-        int maxX, maxY;
-        maxX = init.getSizes().x;
-        maxY = init.getSizes().y;
+    private void calculateSimpleDeadLock(){       
+        int maxX = init.getSizes().x;
+        int maxY = init.getSizes().y;
         
         LinkedList<State> generator = new LinkedList<State>();
         LinkedList<State> statesAll = new LinkedList<State>();
@@ -51,106 +50,96 @@ public class DeadLock {
             for(int j = 1; j<=maxY; j++){
               Point p = new Point(i,j);
               
-              if (init.isEmptyPoint(p) || init.man.equals(p)){
-                if (!simpleDeadLock.contains(p)) {                
-                                        
+              if (init.isEmptyPoint(p)){
+                if (!simpleDeadLock.contains(p)){                                        
                     init.boxes.add(p); 
                     if (p.equals(init.man)){
                         State c = init.copyState();
-                        c.man.x = c.man.x-1;
+                        int ii = 1; int jj= 1;
+                        for (ii=1; ii<=maxX; ii++)
+                        	for (jj=1; jj<=maxY; jj++)
+                        		if (init.isEmptyPoint(new Point(ii,jj)) && !(new Point(ii,jj).equals(init.man)))
+                        c.man = new Point(ii,jj);
                         generator.add(c);
                     }
                     else
                         generator.add(init.copyState());                
                     boolean flag = false;
                     State cur = null;            
-                    do{              
-                        cur = generator.poll();                    
+                    do{                                       
+                        cur = generator.poll();
+                        flag = false;
+                        
                         if (cur!=null){
-                            if (cur.isEmptyPoint(cur.man.x+1, cur.man.y)){
-                                State c = cur.copyState();
-                                c.man.x = c.man.x+1;
-                                c.parentState = cur;
-                                if (!(generator.contains(c) || statesAll.contains(c)))                      
-                                        generator.add(c);                        
-                            }
-                            if (cur.isEmptyPoint(cur.man.x-1, cur.man.y)){
-                                State c = cur.copyState();
-                                c.man.x = c.man.x-1;
-                                c.parentState = cur;
-                                if (!(generator.contains(c) || statesAll.contains(c)))                  
-                                            generator.add(c);                        
-                            }
-                            
-                            if (cur.isEmptyPoint(cur.man.x, cur.man.y+1)){
-                                    State c = cur.copyState();
-                                    c.man.y = c.man.y+1;
-                                    c.parentState = cur;
-                                    if (!(generator.contains(c) || statesAll.contains(c)))                    
-                                            generator.add(c);                        
-                            }
-                            
-                            if (cur.isEmptyPoint(cur.man.x, cur.man.y-1)){
-                                State c = cur.copyState();
-                                c.man.y = c.man.y-1;
-                                c.parentState = cur;
-                                if (!(generator.contains(c) || statesAll.contains(c)))                  
-                                            generator.add(c);                        
-                            }
-                                    
-                            if (cur.boxes.contains(new Point(cur.man.x+1, cur.man.y))){
-                                if (cur.isEmptyPoint(cur.man.x+2, cur.man.y)){
-                                    State c = cur.copyState();
-                                    c.man.x = c.man.x+1;
-                                    c.boxes.removeFirstOccurrence(new Point(cur.man.x+1, cur.man.y));
-                                    c.boxes.add(new Point(cur.man.x+2, cur.man.y));   
-                                    c.parentState = cur;
-                                    if (!(generator.contains(c) || statesAll.contains(c)))                       
-                                            generator.add(c);                            
-                                }                
-                            }
-            
-                            if (cur.boxes.contains(new Point(cur.man.x-1, cur.man.y))){
-                                if (cur.isEmptyPoint(cur.man.x-2, cur.man.y)){
-                                    State c = cur.copyState();
-                                    c.man.x = c.man.x-1;
-                                    c.boxes.removeFirstOccurrence(new Point(cur.man.x-1, cur.man.y));
-                                    c.boxes.add(new Point(cur.man.x-2, cur.man.y));
-                                    c.parentState = cur;
-                                if (!(generator.contains(c) || statesAll.contains(c)))
-                                        generator.add(c);                    
-                                }                
-                            }
-            
-                            if (cur.boxes.contains(new Point(cur.man.x, cur.man.y+1))){
-                                if (cur.isEmptyPoint(cur.man.x, cur.man.y+2)){
-                                    State c = cur.copyState();
-                                    c.man.y = c.man.y+1;
-                                    c.boxes.removeFirstOccurrence(new Point(cur.man.x, cur.man.y+1));
-                                    c.boxes.add(new Point(cur.man.x, cur.man.y+2));
-                                    c.parentState = cur;
-                                if (!(generator.contains(c) || statesAll.contains(c)))
-                                        generator.add(c);                    
-                                }                
-                            }
-            
-                            if (cur.boxes.contains(new Point(cur.man.x, cur.man.y-1))){
-                                if (cur.isEmptyPoint(cur.man.x, cur.man.y-2)){
-                                    State c = cur.copyState();
-                                    c.man.y = c.man.y-1;
-                                    c.boxes.removeFirstOccurrence(new Point(cur.man.x, cur.man.y-1));
-                                    c.boxes.add(new Point(cur.man.x, cur.man.y-2));
-                                    c.parentState = cur;
-                                if (!(generator.contains(c) || statesAll.contains(c)))
-                                        generator.add(c);
-                                }
-                            }
-                            if (!statesAll.contains(cur)) statesAll.add(cur);
-                            for (State it: statesAll){
-                                flag = flag | it.isBoxOnGoal(it.boxes.get(0));
-                            }             
+                      	  
+                          for (Point pBox: cur.boxes){            	
+                          	if (cur.isEmptyPoint(pBox.x-1, pBox.y)){            			
+                          			String pat = Astar.pathTo(cur, new Point(pBox.x+1, pBox.y));
+                          			if (!pat.equals("")){
+                          				State c = cur.copyState();
+                          				if (pat.equals("on")) pat =""; 
+                          				c.path = pat+"U";
+                          				c.man = new Point(pBox.x, pBox.y);
+                          				c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
+                          				c.boxes.add(new Point(pBox.x-1, pBox.y));
+                          				c.parentState = cur;                  
+                          				if (!(generator.contains(c) || statesAll.contains(c)))                       
+                          					generator.add(c);
+                          			}            				            			            			
+                          		} 
+                          		
+                          		if (cur.isEmptyPoint(pBox.x+1, pBox.y)){
+                          				String pat = Astar.pathTo(cur, new Point(pBox.x-1, pBox.y));
+                          				if (!pat.equals("")){            					
+                          					State c = cur.copyState();
+                          					if (pat.equals("on")) pat =""; 
+                          					c.path = pat + "D";
+                          					c.man = new Point(pBox.x, pBox.y);
+                          					c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
+                              				c.boxes.add(new Point(pBox.x+1, pBox.y));
+                              				c.parentState = cur;                              		
+                              				if (!(generator.contains(c) || statesAll.contains(c)))                       
+                              					generator.add(c);
+                          				}
+                          		}
+                          		
+                          		if (cur.isEmptyPoint(pBox.x, pBox.y+1)){
+                          				String pat = Astar.pathTo(cur, new Point(pBox.x, pBox.y-1));
+                          				if (!pat.equals("")){            					
+                          					State c = cur.copyState();
+                          					if (pat.equals("on")) pat =""; 
+                          					c.path = pat + "R";
+                          					c.man = new Point(pBox.x, pBox.y);
+                          					c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
+                              				c.boxes.add(new Point(pBox.x, pBox.y+1));
+                              				c.parentState =cur;                              				
+                              				if (!(generator.contains(c) || statesAll.contains(c)))                       
+                              					generator.add(c);
+                          				}
+                          		}
+                          		
+                          		if (cur.isEmptyPoint(pBox.x, pBox.y-1)){
+                          				String pat = Astar.pathTo(cur, new Point(pBox.x, pBox.y+1));
+                          				if (!pat.equals("")){            					
+                          					State c = cur.copyState();
+                          					if (pat.equals("on")) pat =""; 
+                          					c.path = pat + "L";
+                          					c.man = new Point(pBox.x, pBox.y);
+                          					c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
+                              				c.boxes.add(new Point(pBox.x, pBox.y-1));
+                              				c.parentState = cur;                              				
+                              				if (!(generator.contains(c) || statesAll.contains(c)))                       
+                              					generator.add(c);
+                          				}
+                          		}                          	
+                          }        	          	
+                          if (!statesAll.contains(cur)) statesAll.add(cur);
+                          for (State it: statesAll){
+                               flag = flag | it.isBoxOnGoal(it.boxes.get(0));
+                          }             
                         }           
-                    }while(!(generator.isEmpty() || flag));
+                      }while(!(generator.isEmpty() || flag));
+                    
                     if (!flag){
                         if (!(simpleDeadLock.contains(p))) simpleDeadLock.add(p);                        
                     }
