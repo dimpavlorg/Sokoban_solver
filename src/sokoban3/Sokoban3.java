@@ -24,10 +24,10 @@ public class Sokoban3 {
            //System.out.println(init);        
            //DeadLock d = new DeadLock(init); 
            //System.out.println(d.toString());
-            //System.out.println(d.isFrosenDeadLock(new Point(3,11), init));
+            //System.out.println(d.isFrosenDeadLock(new Point(4,4), init));
             //System.out.println(d.toString());
            // System.out.println(d.isDeadLock(6, 2));
-           //System.out.println(Astar.pathTo(init, new Point(4,11)));
+           //System.out.println(Astar.pathTo(init, new Point(5,9)));
            System.out.println("Started at "+new Date());
            Solver s = new Solver(new State().getInitialState());            
            s.solve();            

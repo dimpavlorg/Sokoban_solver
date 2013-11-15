@@ -52,18 +52,21 @@ public class DeadLock {
               
               if (init.isEmptyPoint(p)){
                 if (!simpleDeadLock.contains(p)){                                        
-                    init.boxes.add(p); 
+                     
                     if (p.equals(init.man)){
                         State c = init.copyState();
                         int ii = 1; int jj= 1;
                         for (ii=1; ii<=maxX; ii++)
                         	for (jj=1; jj<=maxY; jj++)
-                        		if (init.isEmptyPoint(new Point(ii,jj)) && !(new Point(ii,jj).equals(init.man)))
-                        c.man = new Point(ii,jj);
+                        		if (init.isEmptyPoint(new Point(ii,jj)) && !(new Point(ii,jj).equals(init.man)) && !Astar.pathTo(init, new Point(ii,jj)).equals(""))
+                        				c.man = new Point(ii,jj);
+                        c.boxes.add(p);
                         generator.add(c);
                     }
-                    else
-                        generator.add(init.copyState());                
+                    else{
+                    		init.boxes.add(p);
+                        	generator.add(init.copyState());
+                        }                
                     boolean flag = false;
                     State cur = null;            
                     do{                                       
