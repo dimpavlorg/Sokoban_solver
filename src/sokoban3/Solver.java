@@ -54,7 +54,7 @@ public class Solver {
             				c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
             				c.boxes.add(new Point(pBox.x-1, pBox.y));
             				c.parentState = cur;
-            				//if(!deadLock.isFrosenDeadLock(new Point(pBox.x-1, pBox.y), c))
+            				if(!deadLock.isFrosenDeadLock(new Point(pBox.x-1, pBox.y), c))
             						if (!(generator.contains(c) || statesAll.contains(c)))                       
             							generator.add(c);
             			}            				            			            			
@@ -71,7 +71,7 @@ public class Solver {
             					c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
                 				c.boxes.add(new Point(pBox.x+1, pBox.y));
                 				c.parentState = cur;
-                				//if(!deadLock.isFrosenDeadLock(new Point(pBox.x+1, pBox.y), c))
+                				if(!deadLock.isFrosenDeadLock(new Point(pBox.x+1, pBox.y), c))
                 					if (!(generator.contains(c) || statesAll.contains(c)))                       
                 						generator.add(c);
             				}
@@ -88,7 +88,7 @@ public class Solver {
             					c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
                 				c.boxes.add(new Point(pBox.x, pBox.y+1));
                 				c.parentState =cur;
-                				//if(!deadLock.isFrosenDeadLock(new Point(pBox.x, pBox.y+1), c))
+                				if(!deadLock.isFrosenDeadLock(new Point(pBox.x, pBox.y+1), c))
                 					if (!(generator.contains(c) || statesAll.contains(c)))                       
                 						generator.add(c);
             				}
@@ -105,7 +105,7 @@ public class Solver {
             					c.boxes.removeFirstOccurrence(new Point(pBox.x, pBox.y));
                 				c.boxes.add(new Point(pBox.x, pBox.y-1));
                 				c.parentState = cur;
-                				//if(!deadLock.isFrosenDeadLock(new Point(pBox.x, pBox.y-1), c))
+                				if(!deadLock.isFrosenDeadLock(new Point(pBox.x, pBox.y-1), c))
                 					if (!(generator.contains(c) || statesAll.contains(c)))                       
                 						generator.add(c);
             				}
